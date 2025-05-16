@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalima Typing Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gold-gradient {
+            background: linear-gradient(to right, #015701, #12b612);
+        }
+        .gold-text {
+            background: linear-gradient(to right, #015701, #12b612);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .gold-border {
+            border: 2px solid;
+            border-image: linear-gradient(to right, #015701, #12b612);
+        }
+        .typing-text {
+            font-family: 'Courier New', monospace;
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .islamic-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2316a34a' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+                @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen islamic-pattern">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-bold mb-5 gold-text">
+                    <i class="fas fa-trophy mb-5 mr-3"></i>Kalima Typing Challenge
+                </h1>
+                <p class="text-gray-600">Test your typing speed and accuracy in this golden challenge!</p>
+            </div>
+
+            <!-- Stats Display -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <!-- WPM -->
+                <div class="bg-green-100 rounded-xl p-6 shadow-lg text-center green-border">
+                    <div class="text-4xl font-bold text-[#015701]" id="wpm">0</div>
+                    <div class="text-gray-600 mt-2">Words Per Minute</div>
+                </div>
+                
+                <!-- Accuracy -->
+                <div class="bg-green-100 rounded-xl p-6 shadow-lg text-center green-border">
+                    <div class="relative w-20 h-20 mx-auto mb-2">
+                        <svg class="w-full h-full" viewBox="0 0 42 42">
+                            <circle class="text-gray-700" stroke-width="4" stroke="currentColor" fill="transparent" r="15.9" cx="21" cy="21"/>
+                            <circle class="progress-ring__circle text-[#015701]" stroke-width="4" stroke-dasharray="100, 100" stroke="currentColor" fill="transparent" r="15.9" cx="21" cy="21" id="accuracy-ring"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-xl font-bold gold-text" id="accuracy">0%</span>
+                        </div>
+                    </div>
+                    <div class="text-gray-600">Accuracy</div>
+                </div>
+                
+                <!-- Timer -->
+                <div class="bg-green-100 rounded-xl p-6 shadow-lg text-center green-border">
+                    <div class="text-4xl font-bold text-[#015701]" id="timer">60</div>
+                    <div class="text-gray-600 mt-2">Seconds Remaining</div>
+                </div>
+            </div>
+
+            <!-- Typing Area -->
+            <div class="bg-green-100 rounded-xl p-6 mb-6 shadow-lg border-green">
+                <div class="mb-4">
+                    <div class="text-sm font-medium text-gray-500 mb-2">Type this text:</div>
+                    <div id="targetText" class="bg-gray-100 p-4 rounded-lg text-green-800 typing-text text-lg leading-relaxed mb-4"></div>
+                    
+                    <div class="relative">
+                        <textarea id="userInput" rows="4" class="w-full px-4 py-3 bg-gray-100 border border-gray-600 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" placeholder="Start typing here..."></textarea>
+                        <div id="cursor" class="absolute top-0 left-0 w-2 h-6 bg-yellow-400 opacity-0"></div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    <button id="startBtn" class="px-6 py-2 gold-gradient text-gray-900 font-bold rounded-lg hover:opacity-90 transition">
+                        <i class="fas fa-play mr-2"></i> Start Challenge
+                    </button>
+                    <button id="newTextBtn" class="px-4 py-2 bg-[#015701] text-gray-300 rounded-lg hover:bg-gray-600 transition">
+                        <i class="fas fa-sync-alt mr-2"></i> New Text
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="bg-green-100 rounded-xl p-6 shadow-lg gold-border hidden">
+                <h2 class="text-2xl font-bold text-center text-[#015701] mb-4">
+                    <i class="fas fa-medal mr-2"></i> Your Results
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <div class="text-lg font-semibold text-gray-600 mb-2">Typing Speed:</div>
+                        <div class="text-3xl font-bold text-[#015701]" id="finalWpm">0 WPM</div>
+                    </div>
+                    <div>
+                        <div class="text-lg font-semibold text-gray-600 mb-2">Accuracy:</div>
+                        <div class="text-3xl font-bold text-[#015701]" id="finalAccuracy">0%</div>
+                    </div>
+                    <div>
+                        <div class="text-lg font-semibold text-gray-600 mb-2">Correct Characters:</div>
+                        <div class="text-3xl font-bold text-[#015701]" id="correctChars">0</div>
+                    </div>
+                    <div>
+                        <div class="text-lg font-semibold text-gray-600 mb-2">Wrong Characters:</div>
+                        <div class="text-3xl font-bold text-[#015701]" id="wrongChars">0</div>
+                    </div>
+                </div>
+                <div class="mt-6 text-center">
+                    <button id="tryAgainBtn" class="px-6 py-2 gold-gradient text-gray-900 font-bold rounded-lg hover:opacity-90 transition">
+                        <i class="fas fa-redo mr-2"></i> Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Floating Action Button -->
+    <div class="fixed bottom-8 right-8 z-50">
+        <a href="contact.html" class="bg-[#015701] hover:bg-[#12b612] text-white w-16 h-16 rounded-full flex items-center justify-center shadow-xl transition duration-300 floating">
+            <i class="fas fa-envelope text-2xl"></i>
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const targetText = document.getElementById('targetText');
+            const userInput = document.getElementById('userInput');
+            const startBtn = document.getElementById('startBtn');
+            const newTextBtn = document.getElementById('newTextBtn');
+            const tryAgainBtn = document.getElementById('tryAgainBtn');
+            const results = document.getElementById('results');
+            const wpmDisplay = document.getElementById('wpm');
+            const accuracyDisplay = document.getElementById('accuracy');
+            const accuracyRing = document.getElementById('accuracy-ring');
+            const timerDisplay = document.getElementById('timer');
+            const finalWpm = document.getElementById('finalWpm');
+            const finalAccuracy = document.getElementById('finalAccuracy');
+            const correctChars = document.getElementById('correctChars');
+            const wrongChars = document.getElementById('wrongChars');
+            const cursor = document.getElementById('cursor');
+
+            // Sample texts
+            const sampleTexts = [
+                "Narrated 'Umar bin Al-Khattab RA, I heard Allah's Messenger (SAW) saying, The reward of deeds depends upon the intentions and every person will get the reward according to what he has intended.",
+                "Narrated Ibn 'Umar RA, Allah's Messenger (SAW) said, Islam is based on five principles. To testify that none has the right to be worshipped but Allah, To perform Swalah, To pay Zakaat, To fast in the month of Ramadhwaan, and to perform Hajj.",
+                "Narrated Abu Hurairah RA, Allaah's Messenger (SAW) said, Faith consists of more than sixty sub-divisions or branches. And Hayaah 'modesty' is part of faith.",
+                "Narrated 'Abdullãh bin 'Amr, RA. The Prophet SAW said, A Muslim is the one who avoids harming Muslims with his tongue and hands. And a Muhaajir is the one who gives up all what Allaah Has forbidden.",
+                "Narrated Abu Musa RA. Some people asked Allaah's Messenger SAW, Who is the best Muslim? He replied, the one who avoids harming the Muslims with his tongue and hands. ",
+                "Narrated Anas RA. The Prophet SAW said, none of you will have faith till he likes for his brother what he likes for himself.",
+                "Narrated AbU Hurairah RA. Allaah's Messenger SAW said: By Him in Whose Hands my life is, none of you will have faith till he loves me more than his father and his children.",
+                "The Messenger of Allaah said: The one to whom Allaah and His Messenger Muhammad SAW become more dearer, will test the sweetness of Faith.",
+                "The Messenger of Allaah said: The one who loves a person and he loves him only for the sake of Allaah, will test the sweetness of Faith.",
+                "The Messenger of Allaah said: The one who hates to go back to disbelief as he hates to be thrown into hell fire, will test the sweetness of Faith.",
+                "Narrated Anas bin Maalik RA. The Messenger of Allaah said: Make things easy for the people, and do not make things difficult for them and give them glad tidings and do not repel them."
+            ];
+
+            // Variables
+            let timer;
+            let timeLeft = 60;
+            let isTyping = false;
+            let startTime;
+            let correctKeystrokes = 0;
+            let totalKeystrokes = 0;
+            let currentText = "";
+            let currentPosition = 0;
+
+            // Initialize
+            loadNewText();
+            userInput.disabled = true;
+
+            // Event Listeners
+            startBtn.addEventListener('click', startTest);
+            newTextBtn.addEventListener('click', resetTest);
+            tryAgainBtn.addEventListener('click', resetTest);
+            userInput.addEventListener('input', checkTyping);
+            userInput.addEventListener('keydown', showCursor);
+
+            // Functions
+            function loadNewText() {
+                currentText = sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
+                targetText.innerHTML = "";
+                
+                // Create colored spans for each character
+                for (let i = 0; i < currentText.length; i++) {
+                    const span = document.createElement('span');
+                    span.textContent = currentText[i];
+                    span.id = `char-${i}`;
+                    targetText.appendChild(span);
+                }
+            }
+
+            function startTest() {
+                if (isTyping) return;
+                
+                isTyping = true;
+                startTime = new Date().getTime();
+                userInput.disabled = false;
+                userInput.value = "";
+                userInput.focus();
+                startBtn.disabled = true;
+                newTextBtn.disabled = true;
+                
+                // Reset stats
+                correctKeystrokes = 0;
+                totalKeystrokes = 0;
+                currentPosition = 0;
+                timeLeft = 60;
+                updateAccuracy(0);
+                updateWPM(0);
+                
+                // Start timer
+                timer = setInterval(updateTimer, 1000);
+                
+                // Hide results
+                results.classList.add('hidden');
+            }
+
+            function updateTimer() {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    endTest();
+                }
+            }
+
+            function checkTyping() {
+                if (!isTyping) return;
+                
+                const inputText = userInput.value;
+                totalKeystrokes = inputText.length;
+                
+                // Check each character
+                let newCorrect = 0;
+                for (let i = 0; i < inputText.length; i++) {
+                    const targetChar = currentText[i];
+                    const inputChar = inputText[i];
+                    const charSpan = document.getElementById(`char-${i}`);
+                    
+                    if (targetChar === inputChar) {
+                        charSpan.className = "text-green-400";
+                        newCorrect++;
+                    } else {
+                        charSpan.className = "text-red-400";
+                    }
+                }
+                
+                correctKeystrokes = newCorrect;
+                currentPosition = inputText.length;
+                
+                // Calculate accuracy
+                const accuracy = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
+                updateAccuracy(accuracy);
+                
+                // Calculate WPM (5 characters = 1 word)
+                const timeElapsed = (new Date().getTime() - startTime) / 60000; // in minutes
+                const words = correctKeystrokes / 5;
+                const wpm = Math.round(words / timeElapsed);
+                updateWPM(wpm);
+                
+                // Auto-scroll target text
+                if (currentPosition > 0) {
+                    const currentChar = document.getElementById(`char-${currentPosition - 1}`);
+                    if (currentChar) {
+                        currentChar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            }
+
+            function updateAccuracy(accuracy) {
+                accuracyDisplay.textContent = `${accuracy}%`;
+                
+                // Update progress ring
+                const circumference = 2 * Math.PI * 15.9;
+                const offset = circumference - (accuracy / 100) * circumference;
+                accuracyRing.style.strokeDashoffset = offset;
+            }
+
+            function updateWPM(wpm) {
+                wpmDisplay.textContent = wpm;
+            }
+
+            function showCursor(e) {
+                if (!isTyping) return;
+                
+                // Hide cursor by default
+                cursor.style.opacity = '0';
+                
+                // Show cursor for printable characters
+                if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Delete') {
+                    const inputRect = userInput.getBoundingClientRect();
+                    const textBeforeCursor = userInput.value.substring(0, userInput.selectionStart);
+                    const tempSpan = document.createElement('span');
+                    tempSpan.style.position = 'absolute';
+                    tempSpan.style.whiteSpace = 'pre';
+                    tempSpan.style.font = window.getComputedStyle(userInput).font;
+                    tempSpan.textContent = textBeforeCursor;
+                    document.body.appendChild(tempSpan);
+                    
+                    cursor.style.left = `${inputRect.left + tempSpan.offsetWidth + 10}px`;
+                    cursor.style.top = `${inputRect.top + 12}px`;
+                    cursor.style.opacity = '1';
+                    
+                    document.body.removeChild(tempSpan);
+                    
+                    // Blink effect
+                    clearInterval(cursor.blinkInterval);
+                    cursor.blinkInterval = setInterval(() => {
+                        cursor.style.opacity = cursor.style.opacity === '1' ? '0' : '1';
+                    }, 500);
+                }
+            }
+
+            function endTest() {
+                clearInterval(timer);
+                isTyping = false;
+                userInput.disabled = true;
+                startBtn.disabled = false;
+                newTextBtn.disabled = false;
+                
+                // Calculate final stats
+                const accuracy = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
+                const timeElapsed = (new Date().getTime() - startTime) / 60000; // in minutes
+                const words = correctKeystrokes / 5;
+                const wpm = Math.round(words / timeElapsed);
+                
+                // Display results
+                finalWpm.textContent = `${wpm} WPM`;
+                finalAccuracy.textContent = `${accuracy}%`;
+                correctChars.textContent = correctKeystrokes;
+                wrongChars.textContent = totalKeystrokes - correctKeystrokes;
+                
+                results.classList.remove('hidden');
+            }
+
+            function resetTest() {
+                clearInterval(timer);
+                isTyping = false;
+                userInput.disabled = true;
+                userInput.value = "";
+                startBtn.disabled = false;
+                newTextBtn.disabled = false;
+                timerDisplay.textContent = "60";
+                timeLeft = 60;
+                updateAccuracy(0);
+                updateWPM(0);
+                results.classList.add('hidden');
+                
+                // Load new text and reset character colors
+                loadNewText();
+                
+                // Hide cursor
+                cursor.style.opacity = '0';
+                clearInterval(cursor.blinkInterval);
+            }
+        });
+    </script>
+</body>
+</html>
