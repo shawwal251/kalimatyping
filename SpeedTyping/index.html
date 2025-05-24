@@ -201,7 +201,7 @@
             function loadNewText() {
                 currentText = sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
                 targetText.innerHTML = "";
-                
+
                 // Create colored spans for each character
                 for (let i = 0; i < currentText.length; i++) {
                     const span = document.createElement('span');
@@ -213,7 +213,7 @@
 
             function startTest() {
                 if (isTyping) return;
-                
+
                 isTyping = true;
                 startTime = new Date().getTime();
                 userInput.disabled = false;
@@ -221,7 +221,7 @@
                 userInput.focus();
                 startBtn.disabled = true;
                 newTextBtn.disabled = true;
-                
+
                 // Reset stats
                 correctKeystrokes = 0;
                 totalKeystrokes = 0;
@@ -229,10 +229,11 @@
                 timeLeft = 60;
                 updateAccuracy(0);
                 updateWPM(0);
-                
+
                 // Start timer
+                timerDisplay.textContent = timeLeft; // Show 60 initially
                 timer = setInterval(updateTimer, 1000);
-                
+
                 // Hide results
                 results.classList.add('hidden');
             }
@@ -240,7 +241,7 @@
             function updateTimer() {
                 timeLeft--;
                 timerDisplay.textContent = timeLeft;
-                
+
                 if (timeLeft <= 0) {
                     endTest();
                 }
@@ -248,17 +249,17 @@
 
             function checkTyping() {
                 if (!isTyping) return;
-                
+
                 const inputText = userInput.value;
                 totalKeystrokes = inputText.length;
-                
+
                 // Check each character
                 let newCorrect = 0;
                 for (let i = 0; i < inputText.length; i++) {
                     const targetChar = currentText[i];
                     const inputChar = inputText[i];
                     const charSpan = document.getElementById(`char-${i}`);
-                    
+
                     if (targetChar === inputChar) {
                         charSpan.className = "text-green-400";
                         newCorrect++;
@@ -267,19 +268,27 @@
                     }
                 }
                 
+               // Reset color for characters not yet typed or deleted
+               for (let i = inputText.length; i < currentText.length; i++) {
+                    const charSpan = document.getElementById(`char-${i}`);
+                    if (charSpan) {
+                       charSpan.className = ""; // Or your default color class
+                    }
+               }
+
                 correctKeystrokes = newCorrect;
                 currentPosition = inputText.length;
-                
+
                 // Calculate accuracy
                 const accuracy = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
                 updateAccuracy(accuracy);
-                
+
                 // Calculate WPM (5 characters = 1 word)
                 const timeElapsed = (new Date().getTime() - startTime) / 60000; // in minutes
                 const words = correctKeystrokes / 5;
-                const wpm = Math.round(words / timeElapsed);
+                const wpm = timeElapsed > 0 ? Math.round(words / timeElapsed) : 0;
                 updateWPM(wpm);
-                
+
                 // Auto-scroll target text
                 if (currentPosition > 0) {
                     const currentChar = document.getElementById(`char-${currentPosition - 1}`);
@@ -287,11 +296,16 @@
                         currentChar.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 }
+
+                // Check if the user has finished typing the entire text
+                if (inputText.length === currentText.length) {
+                    endTest();
+                }
             }
 
             function updateAccuracy(accuracy) {
                 accuracyDisplay.textContent = `${accuracy}%`;
-                
+
                 // Update progress ring
                 const circumference = 2 * Math.PI * 15.9;
                 const offset = circumference - (accuracy / 100) * circumference;
@@ -304,10 +318,10 @@
 
             function showCursor(e) {
                 if (!isTyping) return;
-                
+
                 // Hide cursor by default
                 cursor.style.opacity = '0';
-                
+
                 // Show cursor for printable characters
                 if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Delete') {
                     const inputRect = userInput.getBoundingClientRect();
@@ -318,13 +332,13 @@
                     tempSpan.style.font = window.getComputedStyle(userInput).font;
                     tempSpan.textContent = textBeforeCursor;
                     document.body.appendChild(tempSpan);
-                    
+
                     cursor.style.left = `${inputRect.left + tempSpan.offsetWidth + 10}px`;
                     cursor.style.top = `${inputRect.top + 12}px`;
                     cursor.style.opacity = '1';
-                    
+
                     document.body.removeChild(tempSpan);
-                    
+
                     // Blink effect
                     clearInterval(cursor.blinkInterval);
                     cursor.blinkInterval = setInterval(() => {
@@ -334,25 +348,32 @@
             }
 
             function endTest() {
+                if (!isTyping && timeLeft !== 0) return; // Prevent multiple calls if already ended
+
                 clearInterval(timer);
                 isTyping = false;
                 userInput.disabled = true;
                 startBtn.disabled = false;
                 newTextBtn.disabled = false;
-                
+
                 // Calculate final stats
+                // Ensure startTime is defined before calculating timeElapsed
+                const timeElapsed = startTime ? (new Date().getTime() - startTime) / 60000 : (60 - timeLeft) / 60; // in minutes
                 const accuracy = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
-                const timeElapsed = (new Date().getTime() - startTime) / 60000; // in minutes
                 const words = correctKeystrokes / 5;
-                const wpm = Math.round(words / timeElapsed);
-                
+                const wpm = timeElapsed > 0 ? Math.round(words / timeElapsed) : 0;
+
                 // Display results
                 finalWpm.textContent = `${wpm} WPM`;
                 finalAccuracy.textContent = `${accuracy}%`;
                 correctChars.textContent = correctKeystrokes;
                 wrongChars.textContent = totalKeystrokes - correctKeystrokes;
-                
+
                 results.classList.remove('hidden');
+                
+                // Hide cursor
+                cursor.style.opacity = '0';
+                clearInterval(cursor.blinkInterval);
             }
 
             function resetTest() {
@@ -364,13 +385,14 @@
                 newTextBtn.disabled = false;
                 timerDisplay.textContent = "60";
                 timeLeft = 60;
+                startTime = null; // Reset startTime
                 updateAccuracy(0);
                 updateWPM(0);
                 results.classList.add('hidden');
-                
+
                 // Load new text and reset character colors
                 loadNewText();
-                
+
                 // Hide cursor
                 cursor.style.opacity = '0';
                 clearInterval(cursor.blinkInterval);
